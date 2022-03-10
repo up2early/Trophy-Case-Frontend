@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { MintContainer } from "./container/MintContainer"
 import { TransactionView } from "./view/TransactionView"
-import { UnstakedGamblersContainer } from "./container/UnstakedGamblersContainer"
 import { WalletContainer } from "./container/WalletContainer"
 import { initializeEthers, mintDegenGambler } from "./data/Web3Data"
 
