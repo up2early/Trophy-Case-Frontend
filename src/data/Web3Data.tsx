@@ -17,7 +17,7 @@ const errorCodes = {
     }
 }
 
-export const mintDegenGambler = async (amount: number, provider: any, setTransactionInProgress: Function, setTxError: Function, setTxDone: Function) => {
+export const updateGreeting = async (greeting: string, provider: any, setTransactionInProgress: Function, setTxError: Function, setTxDone: Function) => {
     try {
         const contract = new Contract(
             contractAddresses.TrophyCase,
@@ -25,9 +25,7 @@ export const mintDegenGambler = async (amount: number, provider: any, setTransac
             provider.getSigner(0)
         )
 
-        const price = await contract.mintPrice(amount)
-
-        const tx = await contract.mint(amount, false, { value: price })
+        const tx = await contract.setGreeting(greeting)
 
         setTransactionInProgress(tx.hash)
 
@@ -49,7 +47,7 @@ export const mintDegenGambler = async (amount: number, provider: any, setTransac
     }
 }
 
-export const initializeEthers = async (resetState: Function, updateDappState: Function) => {
+export const initializeWallet = async (resetState: Function, updateDappState: Function) => {
     resetState()
     const providerOptions = {
         /* See Provider Options Section */
@@ -75,25 +73,25 @@ export const initializeEthers = async (resetState: Function, updateDappState: Fu
 
     // Setup Callbacks
     window.ethereum.on("accountsChanged", async (accounts: string[]) => {
-        await initializeEthers(resetState, updateDappState)
+        await initializeWallet(resetState, updateDappState)
         console.log("Account changed", accounts);
     });
 
     // Subscribe to chainId change
     window.ethereum.on("chainChanged", async (chainId: number) => {
-        await initializeEthers(resetState, updateDappState)
+        await initializeWallet(resetState, updateDappState)
         console.log("ChainId changed", chainId);
     });
 
     // Subscribe to provider connection
     window.ethereum.on("connect", async (info: { chainId: number }) => {
-        await initializeEthers(resetState, updateDappState)
+        await initializeWallet(resetState, updateDappState)
         console.log("Connected", info);
     });
 
     // Subscribe to provider disconnection
     window.ethereum.on("disconnect", async (error: { code: number; message: string }) => {
-        await initializeEthers(resetState, updateDappState)
+        await initializeWallet(resetState, updateDappState)
         console.log("Disconnected", error);
     });
 

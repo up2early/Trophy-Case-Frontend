@@ -1,8 +1,8 @@
 import React, { Component } from "react"
-import { MintContainer } from "./container/MintContainer"
 import { TransactionView } from "./view/TransactionView"
 import { WalletContainer } from "./container/WalletContainer"
-import { initializeEthers, mintDegenGambler } from "./data/Web3Data"
+import { initializeWallet, updateGreeting } from "./data/Web3Data"
+import { GreetingContainer } from "./container/GreetingContainer"
 
 interface IDappProps {
 }
@@ -46,8 +46,9 @@ export class Dapp extends Component<IDappProps, IDappState> {
 
                 <this.WalletComponent />
 
-                <this.MintComponent />
-
+                {this.state.walletConnected &&
+                    <this.GreetingComponent />
+                }
             </>
         )
     }
@@ -81,7 +82,7 @@ export class Dapp extends Component<IDappProps, IDappState> {
                     this.setState({ walletConnected: true, provider: provider, address: selectedAddress })
                 }
 
-                await initializeEthers(resetState, updateDappWalletState)
+                await initializeWallet(resetState, updateDappWalletState)
             }
         }
 
@@ -94,47 +95,29 @@ export class Dapp extends Component<IDappProps, IDappState> {
         )
     }
 
-    MintComponent = () => {
-        const mint = async (amount: number) => {
-            const setTxInProgress = (txHash: string) => {
-                this.setState({ txBeingSent: true, txHash: txHash, txDismissed: false, txError: ""})
-            }
-            const setTxError = (message: string) => {
-                this.setState({ txError: message, txBeingSent: true, txDismissed: false })
-            }
-            const setTxDone = () => {
-                this.setState({ txBeingSent: false})
-            }
+    GreetingComponent = () => {
+        return (
+            <GreetingContainer 
+                setGreeting={async (greeting: string) => {
+                    await updateGreeting(greeting, this.state.provider, this.setTxInProgrees, this.setTxError, this.setTxDone)
+                }}
+                greeting={"Test Greeting"}
+            />
+        )
+    }
 
-            mintDegenGambler(amount, this.state.provider, setTxInProgress, setTxError, setTxDone)
-        }
+    setTxError = () => {
+        console.log("Not Implemented")
+        return
+    }
 
-        const displayError = () => {
-            this.setState({ txError: "Wallet not connected", txDismissed: false, txHash: " "})
-        }
+    setTxInProgrees = () => {
+        console.log("Not Implemented")
+        return
+    }
 
-        if (this.state.walletConnected) {
-            return (
-                <MintContainer
-                    tokensAvailable={100}
-                    tokenSymbol={"GAMBLERS"}
-                    tokenName={"Degen Gamblers"}
-                    purchasePrice={0.1}
-                    phase={1}
-                    purchaseUnit={"eth"}
-                    mint={mint} />
-            )
-        } else {
-            return (
-                <MintContainer
-                    tokensAvailable={100}
-                    tokenSymbol={"GAMBLERS"}
-                    tokenName={"Degen Gamblers"}
-                    purchasePrice={0.1}
-                    phase={1}
-                    purchaseUnit={"eth"}
-                    mint={displayError} />
-            )
-        }
+    setTxDone = () => {
+        console.log("Not Implemented")
+        return
     }
 }
