@@ -1,5 +1,4 @@
-import { Contract, Web3Provider } from "zksync-web3";
-
+import { Contract, Provider, Web3Provider } from "zksync-web3";
 import contractAddresses from "../contracts/contract-address.json"
 import TrophyCaseArtifact from "../contracts/TrophyCase.json"
 import Web3Modal from "web3modal"
@@ -17,12 +16,24 @@ const errorCodes = {
     }
 }
 
-export const updateGreeting = async (greeting: string, provider: any, setTransactionInProgress: Function, setTxError: Function, setTxDone: Function) => {
+export const web3getGreeting = async (provider: Provider) => {
+    console.log("Web3: Getting Greeting")
+    const contract = new Contract(
+        contractAddresses.TrophyCase,
+        TrophyCaseArtifact.abi,
+        provider
+    )
+
+    const tx = await contract.greet()
+    return tx
+}
+
+export const web3updateGreeting = async (greeting: string, signer: Web3Provider, setTransactionInProgress: Function, setTxError: Function, setTxDone: Function) => {
     try {
         const contract = new Contract(
             contractAddresses.TrophyCase,
             TrophyCaseArtifact.abi,
-            provider.getSigner(0)
+            signer.getSigner()
         )
 
         const tx = await contract.setGreeting(greeting)
@@ -47,7 +58,7 @@ export const updateGreeting = async (greeting: string, provider: any, setTransac
     }
 }
 
-export const initializeWallet = async (resetState: Function, updateDappState: Function) => {
+export const web3getSigner = async (resetState: Function, updateDappState: Function) => {
     resetState()
     const providerOptions = {
         /* See Provider Options Section */
@@ -71,32 +82,33 @@ export const initializeWallet = async (resetState: Function, updateDappState: Fu
         return
     }
 
+    // Update the Dapp state
+    const address = await provider.getSigner().getAddress()
+    updateDappState(address, provider)
+
     // Setup Callbacks
     window.ethereum.on("accountsChanged", async (accounts: string[]) => {
-        await initializeWallet(resetState, updateDappState)
+        await web3getSigner(resetState, updateDappState)
         console.log("Account changed", accounts);
     });
 
     // Subscribe to chainId change
     window.ethereum.on("chainChanged", async (chainId: number) => {
-        await initializeWallet(resetState, updateDappState)
+        await web3getSigner(resetState, updateDappState)
         console.log("ChainId changed", chainId);
     });
 
     // Subscribe to provider connection
     window.ethereum.on("connect", async (info: { chainId: number }) => {
-        await initializeWallet(resetState, updateDappState)
+        await web3getSigner(resetState, updateDappState)
         console.log("Connected", info);
     });
 
     // Subscribe to provider disconnection
     window.ethereum.on("disconnect", async (error: { code: number; message: string }) => {
-        await initializeWallet(resetState, updateDappState)
+        await web3getSigner(resetState, updateDappState)
         console.log("Disconnected", error);
     });
-
-    const address = await provider.getSigner().getAddress()
-    updateDappState(address, provider)
 
     return provider
 }

@@ -1,8 +1,9 @@
-import React, { Component } from "react"
+import React, { Component, useEffect } from "react"
 import { TransactionView } from "./view/TransactionView"
 import { WalletContainer } from "./container/WalletContainer"
-import { initializeWallet, updateGreeting } from "./data/Web3Data"
+import { web3getGreeting, web3getSigner, web3updateGreeting } from "./data/Web3Data"
 import { GreetingContainer } from "./container/GreetingContainer"
+import { Provider, Web3Provider } from "zksync-web3"
 
 interface IDappProps {
 }
@@ -16,6 +17,7 @@ interface IDappState {
     txHash: string
     txDismissed: boolean
     provider: any
+    greeting: string
 }
 
 export class Dapp extends Component<IDappProps, IDappState> {
@@ -30,9 +32,10 @@ export class Dapp extends Component<IDappProps, IDappState> {
         const networkError = false
         const txHash = ""
         const txDismissed = false
-        const provider = null
+        const provider = new Provider("https://zksync2-testnet.zksync.dev")
+        const greeting = "Loading..."
 
-        this.initialState = { address, walletConnected, txBeingSent, txError, networkError, txHash, txDismissed, provider }
+        this.initialState = { address, walletConnected, txBeingSent, txError, networkError, txHash, txDismissed, provider, greeting }
 
         this.state = this.initialState
     }
@@ -78,11 +81,11 @@ export class Dapp extends Component<IDappProps, IDappState> {
                     this.setState(this.initialState)
                 }
 
-                const updateDappWalletState = (selectedAddress: string, provider: any) => {
-                    this.setState({ walletConnected: true, provider: provider, address: selectedAddress })
+                const updateDappWalletState = (selectedAddress: string, provider: Web3Provider) => {
+                    this.setState({ walletConnected: true, provider , address: selectedAddress })
                 }
 
-                await initializeWallet(resetState, updateDappWalletState)
+                await web3getSigner(resetState, updateDappWalletState)
             }
         }
 
@@ -96,16 +99,31 @@ export class Dapp extends Component<IDappProps, IDappState> {
     }
 
     GreetingComponent = () => {
+        useEffect(() => {
+            async function fetchData(provider: Provider, setState: Function) {
+                // You can await here
+                const greeting = await web3getGreeting(provider)
+                setState(greeting)
+            }
+
+            fetchData(
+                this.state.provider,
+                (greeting: string) => {
+                    this.setState({ greeting })
+                }
+            );
+        }, []) // <-- empty dependency array
         return (
-            <GreetingContainer 
+            <GreetingContainer
                 setGreeting={async (greeting: string) => {
-                    await updateGreeting(greeting, this.state.provider, this.setTxInProgrees, this.setTxError, this.setTxDone)
+                    await web3updateGreeting(greeting, this.state.provider, this.setTxInProgrees, this.setTxError, this.setTxDone)
                 }}
-                greeting={"Test Greeting"}
+                greeting={this.state.greeting}
             />
         )
     }
 
+    // TODO: Move these functions to be inside the component they're used in
     setTxError = () => {
         console.log("Not Implemented")
         return
@@ -116,8 +134,9 @@ export class Dapp extends Component<IDappProps, IDappState> {
         return
     }
 
-    setTxDone = () => {
-        console.log("Not Implemented")
+    setTxDone = async () => {
+        const greeting = await web3getGreeting(this.state.provider)
+        this.setState({ greeting })
         return
     }
 }
