@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { AlertView } from "./view/TransactionView"
+import { AlertView } from "./view/AlertView"
 import { web3getGreeting, web3getSigner, web3updateGreeting } from "./data/Web3Data"
 import { GreetingContainer } from "./container/GreetingContainer"
 import { Provider, Web3Provider } from "zksync-web3"
@@ -121,11 +121,17 @@ export const Dapp = () => {
     } else {
         return (
             <>
-                {!alertState.dismissed &&
-                    <AlertComponent />
-                }
+                <div className="d-flex flex-row align-content-stretch">
+                    <div className="p-2">
+                        <WalletComponent />
 
-                <WalletComponent />
+                    </div>
+                    <div className="flex-fill">
+                        {!alertState.dismissed &&
+                            <AlertComponent />
+                        }
+                    </div>
+                </div>
 
                 <GreetingComponent />
             </>

@@ -5,11 +5,11 @@ export const AlertView = (alertType: string, message: string, dismissed: boolean
 
     let alertClass = ""
     if (alertType === "error") {
-        alertClass = "alert alert-danger"
+        alertClass = "alert alert-danger text-center"
     } else if (alertType === "success") {
-        alertClass = "alert alert-success"
+        alertClass = "alert alert-success text-center"
     } else {
-        alertClass = "alert alert-primary"
+        alertClass = "alert alert-primary text-center"
     }
 
     return (

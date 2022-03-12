@@ -1,16 +1,15 @@
-import React, { CSSProperties } from "react"
-
-const style: CSSProperties = {
-    position: "fixed",
-    width: "6rem",
-}
+import React from "react"
 
 export const WalletView = (connected: boolean, address: string, onConnect: Function) => {
+
+    const style = {
+        width: "6rem"
+    }
 
     console.log("testing")
     if (connected) {
         return (
-            <header>
+            <>
                 <button
                     className="btn btn-dark text-truncate"
                     type="button"
@@ -19,21 +18,19 @@ export const WalletView = (connected: boolean, address: string, onConnect: Funct
                 >
                     {address}
                 </button>
-            </header>
+            </>
         )
     } else {
         return (
             <>
-                <header>
-                    <button
-                        className="btn btn-dark"
-                        type="button"
-                        onClick={() => onConnect()}
-                        style={style}
-                    >
-                        Connect
-                    </button>
-                </header>
+                <button
+                    className="btn btn-dark"
+                    type="button"
+                    onClick={() => onConnect()}
+                    style={style}
+                >
+                    Connect
+                </button>
             </>
         )
     }
