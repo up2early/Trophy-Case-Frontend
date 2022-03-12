@@ -121,12 +121,12 @@ export const Dapp = () => {
     } else {
         return (
             <>
-                <div className="d-flex flex-row align-content-stretch">
-                    <div className="p-2">
+                <div className="d-flex flex-row align-items-stretch">
+                    <div className="p-2 align-self-stretch">
                         <WalletComponent />
 
                     </div>
-                    <div className="flex-fill">
+                    <div className="flex-fill p-2">
                         {!alertState.dismissed &&
                             <AlertComponent />
                         }
