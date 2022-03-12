@@ -8,8 +8,9 @@ import { WalletView } from "./view/WalletView"
 export const Dapp = () => {
     const [wallet, setWallet] = useState<{ address: string, connected: boolean, provider: Web3Provider | null }>({ address: "", connected: false, provider: null })
     const [alertState, setAlertState] = useState({ message: "", dismissed: true, type: "" })
-    const [greeting, setGreeting] = useState("")
     const [zksyncProvider] = useState(new Provider("https://zksync2-testnet.zksync.dev"))
+    const [greeting, setGreeting] = useState("")
+    const [loading, setLoading] = useState(true)
 
     // Get greeting on app load
     useEffect(() => {
@@ -17,6 +18,7 @@ export const Dapp = () => {
             // You can await here
             const greeting = await web3getGreeting(zksyncProvider)
             setGreeting(greeting)
+            setLoading(false)
         }
         updateGreetingState();
     }, [zksyncProvider]) // Runs only once
@@ -110,16 +112,23 @@ export const Dapp = () => {
 
         }
     }
+    if (loading) {
+        return (
+            <>
+                <h1 className="text-center">Loading...</h1>
+            </>
+        )
+    } else {
+        return (
+            <>
+                {!alertState.dismissed &&
+                    <AlertComponent />
+                }
 
-    return (
-        <>
-            {!alertState.dismissed &&
-                <AlertComponent />
-            }
+                <WalletComponent />
 
-            <WalletComponent />
-
-            <GreetingComponent />
-        </>
-    )
+                <GreetingComponent />
+            </>
+        )
+    }
 }
