@@ -64,23 +64,23 @@ export const Dapp = () => {
         useEffect(() => {
             updateGreetingState();
         }, []) // Runs only once
-        
+
         const provider = wallet.provider
 
         if (provider) {
             // Define functions to update the Dapp's state based on Tx status
             const setTxError = () => {
-                setAlertState({ message: "Transaction error", dismissed: false, type: "error"})
+                setAlertState({ message: "Transaction error", dismissed: false, type: "error" })
                 return
             }
 
             const setTxInProgress = () => {
-                setAlertState({ message: "Transaction in progress", dismissed: false, type: ""})
+                setAlertState({ message: "Transaction in progress", dismissed: false, type: "" })
                 return
             }
 
             const setTxDone = () => {
-                setAlertState({ message: "Transaction success", dismissed: false, type: "success"})
+                setAlertState({ message: "Transaction success", dismissed: false, type: "success" })
                 updateGreetingState()
                 return
             }
@@ -103,7 +103,7 @@ export const Dapp = () => {
             return (
                 GreetingContainer(
                     async (greeting: string) => {
-                        setAlertState({ message: "Please connect your wallet", dismissed: false, type: "error"})
+                        setAlertState({ message: "Please connect your wallet", dismissed: false, type: "error" })
                     },
                     greeting
                 )

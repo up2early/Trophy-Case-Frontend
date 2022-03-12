@@ -1,10 +1,10 @@
 import React from "react"
 
 export const AlertView = (alertType: string, message: string, dismissed: boolean, onDismiss: Function) => {
-    if(dismissed) return null
+    if (dismissed) return null
 
     let alertClass = ""
-    if(alertType.localeCompare("error") === 0) {
+    if (alertType.localeCompare("error") === 0) {
         alertClass = "alert alert-danger"
     } else if (alertType.localeCompare("success") === 0) {
         alertClass = "alert alert-success"

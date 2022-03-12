@@ -77,7 +77,7 @@ export const web3getSigner = async (resetState: Function, updateDappState: Funct
     const chainId = (await provider.getNetwork()).chainId
 
     // if (chainId !== networkIds.hardhat && chainId !== networkIds.rinkeby) { TODO: Create check for zksync or goerli
-    if(false) {
+    if (false) {
         console.log("Wrong Network")
         return
     }

@@ -14,10 +14,10 @@ export const GreetingContainer = (setGreeting: Function, greeting: string) => {
   }
 
   return (
-      GreetingView(
-        greeting,
-        onInput,
-        onSubmit
-      )
+    GreetingView(
+      greeting,
+      onInput,
+      onSubmit
+    )
   )
 }
