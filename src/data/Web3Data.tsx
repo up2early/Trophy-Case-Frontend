@@ -16,6 +16,11 @@ const errorCodes = {
     }
 }
 
+export const web3getENSName = async (provider: Provider, address: string) => {
+    const name = await provider.lookupAddress(address)
+    console.log("Name: ", name)
+}
+
 export const web3getGreeting = async (provider: Provider) => {
     console.log("Web3: Getting Greeting")
     const contract = new Contract(
