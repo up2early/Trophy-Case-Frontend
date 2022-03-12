@@ -1,27 +1,21 @@
 import React, { CSSProperties } from "react"
 
-type walletProps = {
-    connected: boolean
-    onConnect: Function
-    address: string | undefined
-}
-
 const style: CSSProperties = {
     position: "fixed",
     width: "6rem",
 }
 
-export const WalletView = (props: walletProps) => {
-    if (props.connected) {
+export const WalletView = (connected: boolean, address: string, onConnect: Function) => {
+    if (connected) {
         return (
             <header>
                 <button
                     className="btn btn-dark text-truncate"
                     type="button"
-                    onClick={() => props.onConnect()}
+                    onClick={() => onConnect()}
                     style={style}
                 >
-                    {props.address}
+                    {address}
                 </button>
             </header>
         )
@@ -31,7 +25,7 @@ export const WalletView = (props: walletProps) => {
                 <button
                     className="btn btn-dark"
                     type="button"
-                    onClick={() => props.onConnect()}
+                    onClick={() => onConnect()}
                     style={style}
                 >
                     Connect

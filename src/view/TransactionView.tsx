@@ -1,38 +1,26 @@
 import React from "react"
 
-type transactionProps = {
-    txHash: string
-    txError: string
-    txBeingSent: boolean
-    dismissed: boolean
-    onDismiss: Function
-}
+export const AlertView = (alertType: string, message: string, dismissed: boolean, onDismiss: Function) => {
+    if(dismissed) return null
 
-export const TransactionView = (props: transactionProps) => {
-    if(props.dismissed) return null
-
-    let alertType = ""
-    let message = ""
-    if(props.txError !== "") {
-        message = "Transaction failed with error: " + props.txError
-        alertType = "alert alert-danger"
-    } else if (props.txBeingSent) {
-        message = "Transaction is confirming. Please wait"
-        alertType = "alert alert-info"
+    let alertClass = ""
+    if(alertType.localeCompare("error") === 0) {
+        alertClass = "alert alert-danger"
+    } else if (alertType.localeCompare("success") === 0) {
+        alertClass = "alert alert-success"
     } else {
-        message = "Transaction finished successfully"
-        alertType = "alert alert-success"
+        alertClass = "alert alert-primary"
     }
 
     return (
-        <div className={alertType} role="alert">
+        <div className={alertClass} role="alert">
             {message}
             <button
                 type="button"
                 className="close"
                 data-dismiss="alert"
                 aria-label="Close"
-                onClick={() => props.onDismiss()}
+                onClick={() => onDismiss()}
             >
                 <span aria-hidden="true">x</span>
             </button>

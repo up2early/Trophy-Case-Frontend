@@ -28,12 +28,12 @@ export const web3getGreeting = async (provider: Provider) => {
     return tx
 }
 
-export const web3updateGreeting = async (greeting: string, signer: Web3Provider, setTransactionInProgress: Function, setTxError: Function, setTxDone: Function) => {
+export const web3updateGreeting = async (greeting: string, provider: Web3Provider, setTransactionInProgress: Function, setTxError: Function, setTxDone: Function) => {
     try {
         const contract = new Contract(
             contractAddresses.TrophyCase,
             TrophyCaseArtifact.abi,
-            signer.getSigner()
+            provider.getSigner()
         )
 
         const tx = await contract.setGreeting(greeting)

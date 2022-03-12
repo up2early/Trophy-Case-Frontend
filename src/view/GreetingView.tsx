@@ -1,20 +1,14 @@
 import React from "react";
 
-type props = {
-    greeting: string
-    onInput: Function
-    onSubmit: Function
-}
-
-export const GreetingView = (props: props) => {
+export const GreetingView = (greeting: string, onInput: Function, onSubmit: Function) => {
     return (
         <div className="text-center">
-            <h1>{props.greeting}</h1>
+            <h1>{greeting}</h1>
             <div>
                 <div className="input-group">
-                    <input type="string" className="form-control" onChange={(event) => props.onInput(event)} />
+                    <input type="string" className="form-control" onChange={(event) => onInput(event)} />
                     <div className="input-group-append">
-                        <button className="btn btn-primary" type="button" onClick={() => props.onSubmit()}>Set Greeting</button>
+                        <button className="btn btn-primary" type="button" onClick={() => onSubmit()}>Set Greeting</button>
                     </div>
                 </div>
             </div>
