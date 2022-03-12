@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from "react"
 import { AlertView } from "./view/TransactionView"
-import { WalletContainer } from "./container/WalletContainer"
 import { web3getGreeting, web3getSigner, web3updateGreeting } from "./data/Web3Data"
 import { GreetingContainer } from "./container/GreetingContainer"
 import { Provider, Web3Provider } from "zksync-web3"
+import { WalletView } from "./view/WalletView"
 
 export const Dapp = () => {
     const [wallet, setWallet] = useState<{ address: string, connected: boolean, provider: Web3Provider | null }>({ address: "", connected: false, provider: null })
     const [alertState, setAlertState] = useState({ message: "", dismissed: true, type: "" })
     const [greeting, setGreeting] = useState("")
+    const [zksyncProvider] = useState(new Provider("https://zksync2-testnet.zksync.dev"))
 
-    const zksyncProvider = new Provider("https://zksync2-testnet.zksync.dev")
+    // Get greeting on app load
+    useEffect(() => {
+        async function updateGreetingState() {
+            // You can await here
+            const greeting = await web3getGreeting(zksyncProvider)
+            setGreeting(greeting)
+        }
+        updateGreetingState();
+    }, [zksyncProvider]) // Runs only once
 
-    const TransactionComponent = () => {
+    const AlertComponent = () => {
         const dismissTx = () => {
             setAlertState({ message: "", dismissed: true, type: "" })
         }
@@ -45,7 +54,7 @@ export const Dapp = () => {
         }
 
         return (
-            WalletContainer(
+            WalletView(
                 wallet.connected,
                 wallet.address,
                 connectWallet
@@ -54,17 +63,6 @@ export const Dapp = () => {
     }
 
     const GreetingComponent = () => {
-        async function updateGreetingState() {
-            // You can await here
-            const greeting = await web3getGreeting(zksyncProvider)
-            setGreeting(greeting)
-        }
-
-        // Get greeting on app load
-        useEffect(() => {
-            updateGreetingState();
-        }, []) // Runs only once
-
         const provider = wallet.provider
 
         if (provider) {
@@ -79,9 +77,10 @@ export const Dapp = () => {
                 return
             }
 
-            const setTxDone = () => {
+            const setTxDone = async () => {
                 setAlertState({ message: "Transaction success", dismissed: false, type: "success" })
-                updateGreetingState()
+                const greeting = await web3getGreeting(zksyncProvider)
+                setGreeting(greeting)
                 return
             }
 
@@ -102,7 +101,7 @@ export const Dapp = () => {
         } else {
             return (
                 GreetingContainer(
-                    async (greeting: string) => {
+                    async () => {
                         setAlertState({ message: "Please connect your wallet", dismissed: false, type: "error" })
                     },
                     greeting
@@ -115,7 +114,7 @@ export const Dapp = () => {
     return (
         <>
             {!alertState.dismissed &&
-                <TransactionComponent />
+                <AlertComponent />
             }
 
             <WalletComponent />

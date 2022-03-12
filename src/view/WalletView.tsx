@@ -6,6 +6,8 @@ const style: CSSProperties = {
 }
 
 export const WalletView = (connected: boolean, address: string, onConnect: Function) => {
+
+    console.log("testing")
     if (connected) {
         return (
             <header>
@@ -22,14 +24,16 @@ export const WalletView = (connected: boolean, address: string, onConnect: Funct
     } else {
         return (
             <>
-                <button
-                    className="btn btn-dark"
-                    type="button"
-                    onClick={() => onConnect()}
-                    style={style}
-                >
-                    Connect
-                </button>
+                <header>
+                    <button
+                        className="btn btn-dark"
+                        type="button"
+                        onClick={() => onConnect()}
+                        style={style}
+                    >
+                        Connect
+                    </button>
+                </header>
             </>
         )
     }

@@ -4,9 +4,9 @@ export const AlertView = (alertType: string, message: string, dismissed: boolean
     if (dismissed) return null
 
     let alertClass = ""
-    if (alertType.localeCompare("error") === 0) {
+    if (alertType === "error") {
         alertClass = "alert alert-danger"
-    } else if (alertType.localeCompare("success") === 0) {
+    } else if (alertType === "success") {
         alertClass = "alert alert-success"
     } else {
         alertClass = "alert alert-primary"
