@@ -3,8 +3,8 @@ import React from "react"
 export const WalletView = (connected: boolean, address: string, onConnect: Function) => {
 
     const style = {
-        width: "6rem",
-        height: "3rem"
+        height: "3rem",
+        maxWidth: "8rem"
     }
 
     if (connected) {

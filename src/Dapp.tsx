@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { AlertView } from "./view/AlertView"
-import { web3getGreeting, web3getSigner, web3updateGreeting } from "./data/Web3Data"
+import { web3getENSName, web3getGreeting, web3getSigner, web3updateGreeting } from "./data/Web3Data"
 import { GreetingContainer } from "./container/GreetingContainer"
 import { Provider, Web3Provider } from "zksync-web3"
 import { WalletView } from "./view/WalletView"
 
 export const Dapp = () => {
-    const [wallet, setWallet] = useState<{ address: string, connected: boolean, provider: Web3Provider | null }>({ address: "", connected: false, provider: null })
+    const [wallet, setWallet] = useState<{ address: string, name: string, connected: boolean, provider: Web3Provider | null }>({ address: "", name: "", connected: false, provider: null })
     const [alertState, setAlertState] = useState({ message: "", dismissed: true, type: "" })
     const [zksyncProvider] = useState(new Provider("https://zksync2-testnet.zksync.dev"))
+    const [L1Provider] = useState(new Provider("https://mainnet.infura.io/v3/1aac0bdb650849a799a2a5ee75829dd1"))
     const [greeting, setGreeting] = useState("")
     const [loading, setLoading] = useState(true)
 
@@ -40,15 +41,23 @@ export const Dapp = () => {
 
     const WalletComponent = () => {
         const resetWalletState = () => {
-            setWallet({ address: "", connected: false, provider: null })
+            setWallet({ address: "", name: "", connected: false, provider: null })
         }
 
         const connectWallet = async () => {
             if (wallet.connected) {
                 resetWalletState()
             } else {
-                const updateDappWalletState = (address: string, provider: Web3Provider) => {
-                    setWallet({ address, connected: true, provider })
+                const updateDappWalletState = async (address: string, provider: Web3Provider) => {
+                    // Once wallet is connected the state to reflect that
+                    setWallet({ address, name: address, connected: true, provider })
+
+                    // Then check for ENS name
+                    const name = await web3getENSName(L1Provider, address)
+
+                    if(name !== address) {
+                        setWallet({ address, name, connected: true, provider })
+                    }
                 }
 
                 await web3getSigner(resetWalletState, updateDappWalletState)
@@ -58,7 +67,7 @@ export const Dapp = () => {
         return (
             WalletView(
                 wallet.connected,
-                wallet.address,
+                wallet.name,
                 connectWallet
             )
         )

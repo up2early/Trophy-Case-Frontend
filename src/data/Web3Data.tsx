@@ -18,7 +18,14 @@ const errorCodes = {
 
 export const web3getENSName = async (provider: Provider, address: string) => {
     const name = await provider.lookupAddress(address)
-    console.log("Name: ", name)
+
+    if(name) {
+        const resolvedAddress = await provider.resolveName(name)
+        if(resolvedAddress === address) {
+            return name
+        }
+    }
+    return address
 }
 
 export const web3getGreeting = async (provider: Provider) => {
